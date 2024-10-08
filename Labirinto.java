@@ -2,7 +2,6 @@
 import javax.swing.*;
 import java.awt.*;
 import java.util.Random;
-import java.util.ArrayList;
 
 public class Labirinto extends JFrame {
     private int[][] labirinto;
@@ -14,7 +13,7 @@ public class Labirinto extends JFrame {
         this.labirinto = labirinto;
         this.cells = new JPanel[labirinto.length][labirinto[0].length];
         initUI();
-        iniciarAnimacao();
+        encontrarCaminho(0,0);
     }
 
     private void initUI() {
@@ -50,33 +49,56 @@ public class Labirinto extends JFrame {
         setVisible(true);
     }
 
-    private void iniciarAnimacao() {
-        // Cria um timer que move o "jogador" a cada 500 milissegundos
-        Timer timer = new Timer(250, e -> moverJogador());
-        timer.start();
+    public boolean isValid(int linha, int coluna) {
+        if (linha < 0 || coluna < 0 || linha >= labirinto.length || coluna >= labirinto[0].length) {
+            return false;
+        }
+        return true;
+
     }
 
-    private void moverJogador() {
-        // Escolhe uma direção aleatória: 0 = cima, 1 = baixo, 2 = esquerda, 3 = direita
-        int direcao = random.nextInt(4);
-        int novaLinha = playerRow;
-        int novaColuna = playerCol;
 
-        switch (direcao) {
-            case 0: // Cima
-                novaLinha = playerRow - 1;
-                break;
-            case 1: // Baixo
-                novaLinha = playerRow + 1;
-                break;
-            case 2: // Esquerda
-                novaColuna = playerCol - 1;
-                break;
-            case 3: // Direita
-                novaColuna = playerCol + 1;
-                break;
+    public boolean encontrarCaminho(int linhaAtual, int colunaAtual) {
+
+        int linhaSaida=labirinto.length;
+        int colunaSaida=labirinto[0].length;
+
+        if (linhaAtual == linhaSaida && colunaAtual == colunaSaida) {
+            moverJogador(linhaAtual, colunaAtual);
+            return true;
         }
 
+
+        if (!isValid(linhaAtual, colunaAtual)) {
+            return false;
+        }
+
+        moverJogador(linhaAtual, colunaAtual);
+        
+        int[] deltaLinha = {-1, 1, 0, 0, -1, -1, 1, 1};
+        int[] deltaColuna = {0, 0, -1, 1, -1, 1, -1, 1};
+
+        for (int i = 0; i < 8; i++) {
+            int novaLinha = linhaAtual + deltaLinha[i];
+            int novaColuna = colunaAtual + deltaColuna[i];
+
+
+            if (encontrarCaminho(novaLinha, novaColuna)) {
+                return true;
+            }
+        }
+
+
+        moverJogador(linhaAtual, colunaAtual);
+
+        return false;
+    }
+
+
+
+    private void moverJogador(int novaLinha, int novaColuna) {
+        // Escolhe uma direção aleatória: 0 = cima, 1 = baixo, 2 = esquerda, 3 = direita
+        
         // Verifica se a nova posição está dentro dos limites e se não é uma parede
         if (novaLinha >= 0 && novaLinha < labirinto.length &&
             novaColuna >= 0 && novaColuna < labirinto[0].length &&
@@ -95,19 +117,8 @@ public class Labirinto extends JFrame {
     // Método para criar um exemplo de labirinto
     public static int[][] criarLabirinto() {
         String csvFile = "csvDemo.csv";
-        Matriz labirinto = CSVReader.read(csvFile);
-        for(int i=0;i<labirinto.size();i++){
+        return CSVReader.read(csvFile);
 
-        }
-        return new int[][]{
-        	{1, 0, 0, 0, 0, 0, 0},
-            {1, 1, 1, 0, 1, 1, 0},
-            {0, 0, 1, 0, 1, 0, 0},
-            {0, 1, 1, 1, 1, 1, 0},
-            {0, 1, 0, 0, 0, 1, 0},
-            {0, 1, 1, 1, 0, 1, 0},
-            {0, 0, 0, 0, 0, 1, 1}
-        };
     }
 
     public static void main(String[] args) {

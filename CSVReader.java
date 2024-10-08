@@ -4,7 +4,7 @@ import java.util.ArrayList;
 public class CSVReader {
 
   public static final String delimiter = ",";
-  public static Matriz read(String csvFile) {
+  public static int[][] read(String csvFile) {
     Matriz m = new Matriz();
     m.matriz = new ArrayList<ArrayList<String>>();
     int tam_linha=0;
@@ -38,12 +38,13 @@ public class CSVReader {
     System.out.println("tamanho: "+tam_linha+tam_coluna);
     int[][] lab = new int[tam_linha][tam_coluna];
     for(int l=0;l<tam_linha;l++){
+      System.out.println(lab);
+      
       for(int c=0;c<tam_coluna;c++){
         lab[l][c]=Integer.parseInt(m.getElem(l,c));
       }
     }
-    System.out.println(lab);
-    return m;
+    return lab;
   }
 
 
