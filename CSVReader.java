@@ -7,6 +7,8 @@ public class CSVReader {
   public static Matriz read(String csvFile) {
     Matriz m = new Matriz();
     m.matriz = new ArrayList<ArrayList<String>>();
+    int tam_linha=0;
+    int tam_coluna=0;
 
     try {
       File file = new File(csvFile);
@@ -15,9 +17,12 @@ public class CSVReader {
       String line = " ";
       String[] tempArr;
       while ((line = br.readLine()) != null) {
+        tam_linha++;
+        tam_coluna=0;
         tempArr = line.split(delimiter);
         ArrayList<String> linha = new ArrayList<String>();
         for (String tempStr: tempArr) {
+          tam_coluna++;
           linha.add(tempStr);
           //System.out.print(tempStr + " ");
         }
@@ -30,6 +35,14 @@ public class CSVReader {
       ioe.printStackTrace();
     }
     m.print();
+    System.out.println("tamanho: "+tam_linha+tam_coluna);
+    int[][] lab = new int[tam_linha][tam_coluna];
+    for(int l=0;l<tam_linha;l++){
+      for(int c=0;c<tam_coluna;c++){
+        lab[l][c]=Integer.parseInt(m.getElem(l,c));
+      }
+    }
+    System.out.println(lab);
     return m;
   }
 
