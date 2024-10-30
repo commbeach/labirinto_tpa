@@ -7,7 +7,6 @@ public class CSVReader {
   public static int[][] read(String csvFile) {
     Matriz m = new Matriz();
     m.matriz = new ArrayList<ArrayList<String>>();
-
     int tam_linha = 0;
     int tam_coluna = 0;
 
